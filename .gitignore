@@ -1,0 +1,33 @@
+# ignore node dependency directories
+node_modules/
+
+### ignore OS generated files ###
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+
+# Mac files
+.DS_Store
+
+### VisualStudioCode ###
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history
+
+# dotenv environment variables file
+.env*
+
+# production
+/dist
+
+# -------------------------
+# BEGIN Whitelisted Files
+# -------------------------
+ 
+### track these files, if they exist ###
+!.gitignore
+!.editorconfig
