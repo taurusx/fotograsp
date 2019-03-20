@@ -1,6 +1,7 @@
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
 
+import Layout from './Layout'
 import { NormalizeStyles } from './../styles/normalize'
 import { GlobalStyles } from './../styles/global-styles'
 import { themes } from './../styles/themes'
@@ -8,12 +9,10 @@ import { themes } from './../styles/themes'
 const App = () => {
   return (
     <ThemeProvider theme={themes.light}>
-      <div className="App">
+      <Layout>
         <NormalizeStyles />
         <GlobalStyles />
-        <h1>Sample heading</h1>
-        <p>Sample text.</p>
-      </div>
+      </Layout>
     </ThemeProvider>
   )
 }
