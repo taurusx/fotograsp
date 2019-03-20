@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { NavLink } from 'react-router-dom'
 
 import { SITE_TITLE } from './../utils/constants'
 
@@ -23,6 +24,7 @@ const HeaderWrapper = styled.header`
   box-sizing: border-box;
   top: 0;
   left: 0;
+  z-index: 10;
   width: 100%;
   height: ${headerHeight};
   color: ${props => props.theme.fgContrast};
@@ -35,7 +37,7 @@ const HeaderWrapper = styled.header`
       props.theme.transition.function
     }`};
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 
   &:hover {
@@ -47,11 +49,42 @@ const HeaderWrapper = styled.header`
   }
 `
 
+const StyledLogoLink = styled(NavLink)`
+  text-decoration: none;
+  box-shadow: none;
+  font-size: 150%;
+  text-transform: none;
+  letter-spacing: 2px;
+  font-weight: bold;
+  color: ${props => props.theme.fgContrast};
+  transition: ${props =>
+    `all ${props.theme.transition.duration} ${
+      props.theme.transition.function
+    }`};
+
+  &.active {
+    color: ${props => props.theme.accent};
+    letter-spacing: 4px;
+  }
+
+  &:hover {
+    color: ${props => props.theme.accent};
+  }
+
+  @media (max-width: 480px) {
+    font-size: 120%;
+  }
+`
+
 const Header = () => {
   return (
     <>
       <HeaderPlaceholder />
-      <HeaderWrapper>{SITE_TITLE}</HeaderWrapper>
+      <HeaderWrapper>
+        <StyledLogoLink exact to="/">
+          {SITE_TITLE}
+        </StyledLogoLink>
+      </HeaderWrapper>
     </>
   )
 }
