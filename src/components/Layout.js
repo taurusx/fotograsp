@@ -1,7 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Switch, Route } from 'react-router-dom'
 
 import Header from './Header'
+import Main from './Main'
+import Collections from './Collections'
+import Gallery from './Gallery'
 
 const LayoutWrapper = styled.div`
   margin: 0 auto;
@@ -15,8 +19,12 @@ const Layout = ({ children }) => {
     <LayoutWrapper>
       <Header />
       {children}
-      <h1>Sample heading</h1>
-      <p>Sample text.</p>
+      <Main>
+        <Switch>
+          <Route exact path="/" component={Collections} />
+          <Route path="/collections/:id" component={Gallery} />
+        </Switch>
+      </Main>
     </LayoutWrapper>
   )
 }
