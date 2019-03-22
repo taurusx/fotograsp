@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+
+import CollectionsCard from './CollectionsCard'
 
 const CollectionsWrapper = styled.section`
   max-width: 100%;
@@ -8,22 +9,55 @@ const CollectionsWrapper = styled.section`
   background-color: ${props => props.theme.bgTopView};
 `
 
-const Collections = () => {
+const Title = styled.h1`
+  text-align: center;
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+
+    &:hover {
+      text-shadow: 1px 1px 3px ${props => props.theme.accent};
+
+      &::after {
+        content: '➥';
+        transform: rotate(-45deg);
+        position: absolute;
+        left: 100%;
+        top: 0;
+      }
+    }
+  }
+`
+
+const CollectionsGrid = styled.div`
+  min-width: 250px;
+  width: 100%;
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: 1fr 1fr;
+
+  @media (max-width: 1280px) {
+    grid-template-columns: 1fr;
+    grid-gap: 20px;
+  }
+`
+
+const Collections = ({ collectionsArray }) => {
   return (
     <CollectionsWrapper>
-      <h1>Aktualne kolekcje z Unsplasha</h1>
-      <p>
-        (Kolekcja - 1.){` `}
-        <Link to="/collections/1">Zdjęcia z kolekcji 1.</Link>
-      </p>
-      <p>
-        (Kolekcja - 2.){` `}
-        <Link to="/collections/2">Zdjęcia z kolekcji 2.</Link>
-      </p>
-      <p>
-        (Kolekcja - 3.){` `}
-        <Link to="/collections/3">Zdjęcia z kolekcji 3.</Link>
-      </p>
+      <Title>
+        Aktualne kolekcje z{' '}
+        <a href="http://unsplash.com" rel="noopener noreferrer" target="_blank">
+          Unsplash.com
+        </a>
+      </Title>
+      <CollectionsGrid>
+        {collectionsArray.map(collection => (
+          <CollectionsCard key={collection.id} collection={collection} />
+        ))}
+      </CollectionsGrid>
     </CollectionsWrapper>
   )
 }
