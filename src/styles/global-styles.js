@@ -15,4 +15,9 @@ export const GlobalStyles = createGlobalStyle`
     color: ${props => props.theme.foreground};
     background-color: ${props => props.theme.background};
   }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 `
