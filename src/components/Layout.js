@@ -6,6 +6,7 @@ import Header from './Header'
 import Main from './Main'
 import Collections from './Collections'
 import Gallery from './Gallery'
+import Loading from './Loading'
 import { unsplash } from './../utils/apiSimulation'
 import {
   getCollections,
@@ -93,7 +94,7 @@ const Layout = ({ children }) => {
             />
           </Switch>
         ) : (
-          <div>Łączymy się z bazą...</div>
+          <Loading />
         )}
       </Main>
     </LayoutWrapper>
