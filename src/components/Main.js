@@ -6,6 +6,7 @@ const MainWrapper = styled.main`
   flex: 1 0 auto;
   margin: 2rem;
   max-width: 100%;
+  min-width: 200px;
   padding: 2rem;
   border-radius: 0.5rem;
   color: ${props => props.theme.fgTopView};
@@ -13,6 +14,7 @@ const MainWrapper = styled.main`
 
   @media (max-width: 480px) {
     margin: 1rem;
+    padding: 2rem 1rem;
   }
 `
 
