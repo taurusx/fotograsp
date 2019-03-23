@@ -7,22 +7,22 @@ import Main from './Main'
 import Collections from './Collections'
 import Gallery from './Gallery'
 import Loading from './Loading'
-import { unsplash } from './../utils/apiSimulation'
+import { unsplash } from '../utils/apiSimulation'
 import {
   getCollections,
   getPhotos,
   parseCollectionsDetails,
   parsePhotosDetails,
-} from './../utils/helpersApi'
+} from '../utils/helpersApi'
 
-const LayoutWrapper = styled.div`
+const WrapperLayout = styled.div`
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 `
 
-const Layout = ({ children }) => {
+const Wrapper = ({ children }) => {
   const [collectionsArray, setCollectionsArray] = useState([])
   const [jsonReady, setJsonReady] = useState(false)
 
@@ -70,7 +70,7 @@ const Layout = ({ children }) => {
   }, [collectionsArray.length])
 
   return (
-    <LayoutWrapper>
+    <WrapperLayout>
       <Header />
       {children}
       <Main>
@@ -97,8 +97,8 @@ const Layout = ({ children }) => {
           <Loading />
         )}
       </Main>
-    </LayoutWrapper>
+    </WrapperLayout>
   )
 }
 
-export default Layout
+export default Wrapper

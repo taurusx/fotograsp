@@ -3,7 +3,7 @@ import { ThemeProvider } from 'styled-components'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import ScrollToTop from './ScrollToTop'
-import Layout from './Layout'
+import Wrapper from './Wrapper'
 import { NormalizeStyles } from './../styles/normalize'
 import { GlobalStyles } from './../styles/global-styles'
 import { themes } from './../styles/themes'
@@ -13,10 +13,10 @@ const App = () => {
     <Router>
       <ScrollToTop>
         <ThemeProvider theme={themes.light}>
-          <Layout>
+          <Wrapper>
             <NormalizeStyles />
             <GlobalStyles />
-          </Layout>
+          </Wrapper>
         </ThemeProvider>
       </ScrollToTop>
     </Router>
