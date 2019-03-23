@@ -31,8 +31,18 @@ const LoadingArea = styled.div`
   justify-content: center;
 `
 
+const ReturnArea = styled.p`
+  text-align: right;
+  padding: 1rem 1rem 0;
+
+  @media (min-width: 480px) {
+    font-size: 120%;
+  }
+`
+
 const StyledLink = styled(Link)`
   color: ${props => props.theme.foreground};
+  font-weight: bold;
 
   &:hover {
     color: ${props => props.theme.accent};
@@ -67,7 +77,10 @@ const Gallery = ({ match, collectionsArray }) => {
         ))}
       </GalleryGrid>
       <LoadingArea ref={ref}>{inView ? <Loading /> : ''}</LoadingArea>
-      <StyledLink to="/">Powrót</StyledLink>
+      <ReturnArea>
+        To już koniec tej galerii. Zobacz także pozostałe{` `}
+        <StyledLink to="/">KOLEKCJE</StyledLink>
+      </ReturnArea>
     </GalleryWrapper>
   )
 }
