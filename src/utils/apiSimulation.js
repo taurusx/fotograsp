@@ -12,6 +12,8 @@ function listCollections(page = 1, perPage = 10, orderBy = 'latest') {
     setTimeout(() => {
       try {
         const result = import('./dummy-data/collections/results.json')
+          .then(result => result.default)
+          .catch(err => new Error(err))
         resolve(result)
       } catch (error) {
         reject(new Error('No collections available. ' + error))
@@ -36,6 +38,8 @@ function getCollectionPhotos(
     setTimeout(() => {
       try {
         const result = import('./dummy-data/collections/' + id + '/photos.json')
+          .then(result => result.default)
+          .catch(err => new Error(err))
         resolve(result)
       } catch (error) {
         reject(new Error('This collection does not exist. ' + error))
@@ -46,7 +50,7 @@ function getCollectionPhotos(
     let i = j - perPage
     i = Math.max(0, i)
     j = Math.max(0, j)
-    return result.default.slice(i, j)
+    return result.slice(i, j)
   })
 }
 
@@ -80,6 +84,8 @@ function getPhoto(id = 'Dfp83V_oSaE') {
     setTimeout(() => {
       try {
         const result = import('./dummy-data/photos/' + id + '/result.json')
+          .then(result => result.default)
+          .catch(err => new Error(err))
         resolve(result)
       } catch (error) {
         reject(new Error('No such photo found. ' + error))

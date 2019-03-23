@@ -9,8 +9,8 @@ function getCollections(unsplash) {
       .listCollections(1, 5, 'latest')
       .then(unsplash.toJson) // todo: original API without 'unsplash'
       .then(json => {
-        collectionsArray = json.default
-        resolve(collectionsArray) // todo: original API without 'default'
+        collectionsArray = json
+        resolve(collectionsArray)
       })
       .catch(err => reject(new Error(err)))
   })
