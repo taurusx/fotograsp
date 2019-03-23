@@ -23,24 +23,26 @@ const WrapperLayout = styled.div`
 `
 
 const Wrapper = ({ children }) => {
+  // Initial API request - collections data without photos details
   const [collectionsArray, setCollectionsArray] = useState([])
   const [jsonReady, setJsonReady] = useState(false)
 
   useEffect(() => {
     if (!jsonReady) {
-      setJsonReady(true)
       let a = getCollections(unsplash)
         .then(result => {
           let array = parseCollectionsDetails(result)
           setCollectionsArray(array)
           return array
         })
+        .then(() => setJsonReady(true))
         .catch(err => new Error(err))
     }
   }, [jsonReady])
 
+  // API request for data of first group of photos from collections
   const [collectionsWithPhotos, setCollectionsWithPhotos] = useState([])
-  const [photosReady, setPhotosReady] = useState(false)
+  const [initialPhotosReady, setInitialPhotosReady] = useState(false)
 
   useEffect(() => {
     if (collectionsArray.length > 0) {
@@ -63,7 +65,7 @@ const Wrapper = ({ children }) => {
             setCollectionsWithPhotos(collections)
           })
           .then(() => {
-            if (collectionsArray.length === flag) setPhotosReady(true)
+            if (collectionsArray.length === flag) setInitialPhotosReady(true)
           })
       })
     }
@@ -74,28 +76,33 @@ const Wrapper = ({ children }) => {
       <Header />
       {children}
       <Main>
-        {photosReady ? (
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={props => (
-                <Collections
-                  {...props}
-                  collectionsArray={collectionsWithPhotos}
-                />
-              )}
-            />
-            <Route
-              path="/collections/:id"
-              render={props => (
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={props => (
+              <Collections
+                {...props}
+                collectionsArray={
+                  jsonReady && !initialPhotosReady
+                    ? collectionsArray
+                    : collectionsWithPhotos
+                }
+                jsonReady={jsonReady}
+              />
+            )}
+          />
+          <Route
+            path="/collections/:id"
+            render={props => {
+              return initialPhotosReady ? (
                 <Gallery {...props} collectionsArray={collectionsWithPhotos} />
-              )}
-            />
-          </Switch>
-        ) : (
-          <Loading />
-        )}
+              ) : (
+                <Loading />
+              )
+            }}
+          />
+        </Switch>
       </Main>
     </WrapperLayout>
   )

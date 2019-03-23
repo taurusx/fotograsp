@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import CollectionsCard from './CollectionsCard'
+import Loading from './Loading'
 
 const CollectionsWrapper = styled.section`
   max-width: 100%;
@@ -44,7 +45,7 @@ const CollectionsGrid = styled.div`
   }
 `
 
-const Collections = ({ collectionsArray }) => {
+const Collections = ({ collectionsArray, jsonReady }) => {
   return (
     <CollectionsWrapper>
       <Title>
@@ -53,11 +54,15 @@ const Collections = ({ collectionsArray }) => {
           Unsplash.com
         </a>
       </Title>
-      <CollectionsGrid>
-        {collectionsArray.map(collection => (
-          <CollectionsCard key={collection.id} collection={collection} />
-        ))}
-      </CollectionsGrid>
+      {jsonReady ? (
+        <CollectionsGrid>
+          {collectionsArray.map(collection => (
+            <CollectionsCard key={collection.id} collection={collection} />
+          ))}
+        </CollectionsGrid>
+      ) : (
+        <Loading />
+      )}
     </CollectionsWrapper>
   )
 }

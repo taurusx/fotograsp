@@ -57,10 +57,10 @@ function getSinglePhoto(unsplash, id) {
 function parseCollectionsDetails(collectionsArray = []) {
   let collectionsDetails = []
   collectionsArray.forEach(collection => {
-    const { id, title, total_photos, links } = collection
+    const { id, title, total_photos, links, preview_photos } = collection
     const { html } = links
     const slug = html.match('(?:[^/])*$')[0]
-    let current = { id, title, total_photos, html, slug }
+    let current = { id, title, total_photos, html, slug, preview_photos }
     collectionsDetails.push(current)
   })
   return collectionsDetails
