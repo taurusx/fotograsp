@@ -34,6 +34,7 @@
     "dotenv-webpack": "^1.7.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
+    "react-intersection-observer": "^8.22.3",
     "react-router-dom": "^5.0.0",
     "styled-components": "^4.1.3"
   }
