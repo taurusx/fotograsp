@@ -11,8 +11,8 @@ import { unsplash } from '../utils/apiSimulation'
 import {
   getCollections,
   getPhotos,
-  parseCollectionsDetails,
-  parsePhotosDetails,
+  filterCollectionsDetails,
+  filterPhotosDetails,
 } from '../utils/helpersApi'
 
 const WrapperLayout = styled.div`
@@ -31,7 +31,7 @@ const Wrapper = ({ children }) => {
     if (!jsonReady) {
       let a = getCollections(unsplash)
         .then(result => {
-          let array = parseCollectionsDetails(result)
+          let array = filterCollectionsDetails(result)
           setCollectionsArray(array)
           return array
         })
@@ -53,7 +53,7 @@ const Wrapper = ({ children }) => {
         let currentCollection = { ...collection }
         const images = getPhotos(unsplash, id)
           .then(photos => {
-            return parsePhotosDetails(photos)
+            return filterPhotosDetails(photos)
           })
           .then(photos => {
             currentCollection.images = photos

@@ -54,7 +54,7 @@ function getSinglePhoto(unsplash, id) {
 /*
  * Return an array with latest collections' most important details
  */
-function parseCollectionsDetails(collectionsArray = []) {
+function filterCollectionsDetails(collectionsArray = []) {
   let collectionsDetails = []
   collectionsArray.forEach(collection => {
     const { id, title, total_photos, links, preview_photos } = collection
@@ -69,7 +69,7 @@ function parseCollectionsDetails(collectionsArray = []) {
 /*
  * Return an array with single collection photos details
  */
-function parsePhotosDetails(photosArray = []) {
+function filterPhotosDetails(photosArray = []) {
   let photosDetails = []
   photosArray.forEach(photo => {
     const { id, color, urls, likes, description } = photo
@@ -84,7 +84,7 @@ function parsePhotosDetails(photosArray = []) {
 /*
  * Return an array with single photo details
  */
-function parseSinglePhotoDetails(photo = {}) {
+function filterSinglePhotoDetails(photo = {}) {
   let emptyDetails = {}
   const {
     alt_description,
@@ -120,7 +120,7 @@ export {
   getCollections,
   getPhotos,
   getSinglePhoto,
-  parseCollectionsDetails,
-  parsePhotosDetails,
-  parseSinglePhotoDetails,
+  filterCollectionsDetails,
+  filterPhotosDetails,
+  filterSinglePhotoDetails,
 }
