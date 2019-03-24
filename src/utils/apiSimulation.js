@@ -46,10 +46,35 @@ function getCollectionPhotos(
       }
     }, timeout)
   }).then(result => {
+    // Limit perPage for each request as per Unsplash API
+    perPage = Math.min(perPage, 30)
     let j = page * perPage
     let i = j - perPage
     i = Math.max(0, i)
     j = Math.max(0, j)
+    const simulatedResultsCount = result.length
+    // Below means that original API returned less results,
+    // do nothing special in simulation
+    if (simulatedResultsCount < 20) return result.slice(i, j)
+    // Requested end of collection exceeds dummy data length
+    if (j > simulatedResultsCount) {
+      let needed = j - i
+      const begin = i % simulatedResultsCount
+      const end =
+        begin + needed < simulatedResultsCount
+          ? begin + needed
+          : simulatedResultsCount
+      const beginArray = result.slice(begin, end)
+      needed -= beginArray.length
+      if (needed === 0) return beginArray
+      const middleRepeat = Math.floor(needed / simulatedResultsCount)
+      const repeatArray = (array, repeat) =>
+        [].concat(...Array.from({ length: repeat }, () => array))
+      const middleArray = repeatArray(result, middleRepeat)
+      const rest = j % simulatedResultsCount
+      const restArray = result.slice(0, rest)
+      return beginArray.concat(middleArray, restArray)
+    }
     return result.slice(i, j)
   })
 }
