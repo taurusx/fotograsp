@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 const ImageCard = styled.div`
   width: 100%;
@@ -24,12 +25,22 @@ const ImageCard = styled.div`
 `
 
 const GalleryCard = ({ photo, title }) => {
-  const { id, color, urls, likes, description } = photo
+  const { id, color, urls = {}, likes, description } = photo
   const { small, regular } = urls
   return (
-    <ImageCard regular={regular} id={id} color={color} likes={likes}>
-      <img src={small} alt={description || title} />
-    </ImageCard>
+    <>
+      {'regular' in urls ? (
+        <Link to={`/photos/${id}/`}>
+          <ImageCard regular={regular} id={id} color={color} likes={likes}>
+            <img src={small} alt={description || title} />
+          </ImageCard>
+        </Link>
+      ) : (
+        <ImageCard regular={regular} id={id} color={color} likes={likes}>
+          <img src={small} alt={description || title} />
+        </ImageCard>
+      )}
+    </>
   )
 }
 

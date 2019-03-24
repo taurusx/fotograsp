@@ -6,6 +6,7 @@ import Header from './Header'
 import Main from './Main'
 import Collections from './Collections'
 import Gallery from './Gallery'
+import Photo from './Photo'
 import Loading from './Loading'
 import { unsplash } from '../utils/apiSimulation'
 import {
@@ -25,6 +26,9 @@ const WrapperLayout = styled.div`
 
 // Context to pass hooks that trigger photos loading in Gallery
 export const PhotosLoadingContext = createContext([false, () => {}])
+
+// Context to pass Photos details
+export const PhotosDetailsContext = createContext({})
 
 const Wrapper = ({ children }) => {
   // Initial API request - collections data without photos details
@@ -191,6 +195,18 @@ const Wrapper = ({ children }) => {
                     collectionsArray={collectionsWithPhotos}
                   />
                 </PhotosLoadingContext.Provider>
+              ) : (
+                <Loading />
+              )
+            }}
+          />
+          <Route
+            path="/photos/:id"
+            render={props => {
+              return props.match.params.id in photosDetails ? (
+                <PhotosDetailsContext.Provider value={photosDetails}>
+                  <Photo {...props} />
+                </PhotosDetailsContext.Provider>
               ) : (
                 <Loading />
               )
