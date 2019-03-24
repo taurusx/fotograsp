@@ -76,8 +76,8 @@ const LoadingIndicator = styled.div`
   }
 `
 
-const Loading = () => (
-  <LoadingIndicator>
+const Loading = ({ style }) => (
+  <LoadingIndicator style={style}>
     <div className="lds-grid">
       <div />
       <div />
