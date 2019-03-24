@@ -13,6 +13,7 @@ import {
   getPhotos,
   filterCollectionsDetails,
   filterPhotosDetails,
+  addPhotosFromArray,
 } from '../utils/helpersApi'
 
 const WrapperLayout = styled.div`
@@ -38,6 +39,16 @@ const Wrapper = ({ children }) => {
           setCollectionsArray(array)
           return array
         })
+        .then(array => {
+          array.forEach(collection => {
+            addPhotosFromArray(
+              collection.preview_photos,
+              photosDetails,
+              setPhotosDetails,
+            )
+          })
+          return array
+        })
         .then(() => setJsonReady(true))
         .catch(err => new Error(err))
     }
@@ -57,6 +68,10 @@ const Wrapper = ({ children }) => {
         const images = getPhotos(unsplash, id)
           .then(photos => {
             return filterPhotosDetails(photos)
+          })
+          .then(array => {
+            addPhotosFromArray(array, photosDetails, setPhotosDetails)
+            return array
           })
           .then(photos => {
             currentCollection.images = photos
@@ -126,6 +141,10 @@ const Wrapper = ({ children }) => {
           const updatedImages = images.concat(photosCut)
           return updatedImages
         })
+        .then(array => {
+          addPhotosFromArray(array, photosDetails, setPhotosDetails)
+          return array
+        })
         .then(updatedImages => {
           currentCollection.images = updatedImages
 
@@ -135,6 +154,9 @@ const Wrapper = ({ children }) => {
         .then(() => setPhotosLoading({ loading: false, ready: true, id: 0 }))
     }
   }, [photosLoading.id > 0])
+
+  // Details of photos requested from API
+  const [photosDetails, setPhotosDetails] = useState({})
 
   return (
     <WrapperLayout>

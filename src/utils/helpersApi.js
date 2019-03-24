@@ -1,3 +1,5 @@
+import { mergeDeep } from './mergeDeep'
+
 /*
  * Return Promise that resolves to latest Unsplash API collections
  * ('latest' and '5' results are set imperatively here)
@@ -72,10 +74,10 @@ function filterCollectionsDetails(collectionsArray = []) {
 function filterPhotosDetails(photosArray = []) {
   let photosDetails = []
   photosArray.forEach(photo => {
-    const { id, color, urls, likes, description } = photo
+    const { id, color, urls, likes, description, user } = photo
     delete urls.raw
     delete urls.full
-    let current = { id, color, urls, likes, description }
+    let current = { id, color, urls, likes, description, user }
     photosDetails.push(current)
   })
   return photosDetails
@@ -116,6 +118,22 @@ function filterSinglePhotoDetails(photo = {}) {
   return photoDetails
 }
 
+function addPhotosFromArray(array, photosState, setPhotosStateHookFn) {
+  let newRecords = {}
+  array.forEach(photo => {
+    const { id } = photo
+    newRecords[id] = photo
+  })
+  return setPhotosStateHookFn(mergeDeep(photosState, newRecords))
+}
+
+function addSinglePhoto(photoObject, photosState, setPhotosStateHookFn) {
+  let newRecord = {}
+  const { id } = photoObject
+  newRecord[id] = photoObject
+  return setPhotosStateHookFn(mergeDeep(photosState, newRecord))
+}
+
 export {
   getCollections,
   getPhotos,
@@ -123,4 +141,6 @@ export {
   filterCollectionsDetails,
   filterPhotosDetails,
   filterSinglePhotoDetails,
+  addPhotosFromArray,
+  addSinglePhoto,
 }
