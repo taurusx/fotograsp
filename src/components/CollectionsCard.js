@@ -65,13 +65,15 @@ const CollectionsCard = ({ collection }) => {
           <Collection id={id}>
             <h2>{title}</h2>
             <CollectionThumbs>
-              {images.map(photo => {
-                return (
-                  <figure key={photo.id}>
-                    <img src={photo.urls.thumb} />
-                  </figure>
-                )
-              })}
+              {images
+                .filter((el, i) => i < 10)
+                .map(photo => {
+                  return (
+                    <figure key={photo.id}>
+                      <img src={photo.urls.thumb} />
+                    </figure>
+                  )
+                })}
             </CollectionThumbs>
           </Collection>
         </Link>
@@ -79,13 +81,15 @@ const CollectionsCard = ({ collection }) => {
         <Collection id={id} className="inactive">
           <h2>{title}</h2>
           <CollectionThumbs>
-            {preview_photos.map(photo => {
-              return (
-                <figure key={photo.id}>
-                  <img src={photo.urls.thumb} />
-                </figure>
-              )
-            })}
+            {preview_photos
+              .filter((el, i) => i < 10)
+              .map(photo => {
+                return (
+                  <figure key={photo.id}>
+                    <img src={photo.urls.thumb} />
+                  </figure>
+                )
+              })}
             {placeholder}
           </CollectionThumbs>
         </Collection>
