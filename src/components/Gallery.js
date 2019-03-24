@@ -97,7 +97,16 @@ const Gallery = ({ match, collectionsArray }) => {
 
   return (
     <GalleryWrapper>
-      <h1>{title}</h1>
+      <h1>
+        {title}
+        {` `}
+        <small>
+          <em>
+            ({total_photos}
+            &nbsp;photos)
+          </em>
+        </small>
+      </h1>
       <GalleryGrid>
         {images.map((photo, index) => (
           <GalleryCard

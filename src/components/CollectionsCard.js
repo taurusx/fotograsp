@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom'
 
 const Collection = styled.div`
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   padding: 0.5rem;
   background-color: ${props => props.theme.bgTopView};
   box-shadow: 3px 3px 5px ${props => props.theme.fgTopView};
@@ -19,13 +22,16 @@ const Collection = styled.div`
   }
 `
 
+const Spacer = styled.div`
+  flex: 1 0 auto;
+`
+
 const CollectionThumbs = styled.div`
   display: grid;
   grid-gap: 2px;
   grid-template-columns: repeat(10, 1fr);
   grid-auto-rows: 100px;
   width: 100%;
-  height: 100%;
   object-fit: cover;
 
   img {
@@ -63,7 +69,17 @@ const CollectionsCard = ({ collection }) => {
       {images.length > 0 ? (
         <Link to={`/collections/${id}/${slug}`}>
           <Collection id={id}>
-            <h2>{title}</h2>
+            <h2>
+              {title}
+              {` `}
+              <small>
+                <em>
+                  ({total_photos}
+                  &nbsp;photos)
+                </em>
+              </small>
+            </h2>
+            <Spacer />
             <CollectionThumbs>
               {images
                 .filter((el, i) => i < 10)
