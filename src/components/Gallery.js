@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { useInView } from 'react-intersection-observer'
 
+import { PhotosLoadingContext } from './Wrapper'
 import GalleryCard from './GalleryCard'
 import Loading from './Loading'
 
@@ -25,10 +26,19 @@ const GalleryGrid = styled.article`
 `
 
 const LoadingArea = styled.div`
-  min-height: 50px;
+  min-height: 40px;
   padding: 1rem;
   display: flex;
   justify-content: center;
+`
+
+const ObservatorArea = styled(LoadingArea)`
+  display: block;
+
+  &.loading,
+  &.complete {
+    display: none;
+  }
 `
 
 const ReturnArea = styled.p`
@@ -54,33 +64,63 @@ const Gallery = ({ match, collectionsArray }) => {
   const currentCollection = collectionsArray.filter(collection => {
     return collection.id == id
   })[0]
-  console.log(currentCollection)
   const { images, title, total_photos } = currentCollection
+
+  // Photos Loading hooks
+  const [photosLoading, setPhotosLoading] = useContext(PhotosLoadingContext)
+
+  // Check if all photos are displayed in Gallery
+  const [displayedCount, setDisplayedCount] = useState(0)
+
+  let displayedAll = displayedCount === total_photos
+  if (images && images.length > displayedCount) {
+    setDisplayedCount(images.length)
+    displayedAll = displayedCount === total_photos
+  }
 
   // Intersection Observer
   const [ref, inView] = useInView({
     rootMargin: '800px',
   })
 
-  function loadMorePhotos() {
-    console.log('Photos are being loaded.')
+  if (inView && !photosLoading.loading && photosLoading.ready)
+    loadMorePhotos(id)
+
+  function loadMorePhotos(idString) {
+    if (displayedAll) return
+    const id = Number(idString)
+    setPhotosLoading({ loading: true, ready: true, id: id })
   }
 
-  if (inView) loadMorePhotos()
+  const classNameLoading = photosLoading.loading ? ' loading ' : ''
+  const classNameComplete = displayedAll ? ' complete ' : ''
 
   return (
     <GalleryWrapper>
       <h1>{title}</h1>
       <GalleryGrid>
-        {images.map(photo => (
-          <GalleryCard key={photo.id} photo={photo} title={title} />
+        {images.map((photo, index) => (
+          <GalleryCard
+            key={`${photo.id}-${index}`}
+            photo={photo}
+            title={title}
+          />
         ))}
       </GalleryGrid>
-      <LoadingArea ref={ref}>{inView ? <Loading /> : ''}</LoadingArea>
-      <ReturnArea>
-        To już koniec tej galerii. Zobacz także pozostałe{` `}
-        <StyledLink to="/">KOLEKCJE</StyledLink>
-      </ReturnArea>
+      <ObservatorArea
+        ref={ref}
+        className={`${classNameLoading} ${classNameComplete}`}
+      />
+      {displayedAll ? (
+        <ReturnArea>
+          To już koniec tej galerii. Zobacz także pozostałe{` `}
+          <StyledLink to="/">KOLEKCJE</StyledLink>
+        </ReturnArea>
+      ) : (
+        <LoadingArea>
+          <Loading />
+        </LoadingArea>
+      )}
     </GalleryWrapper>
   )
 }

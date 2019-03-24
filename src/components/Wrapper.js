@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, createContext } from 'react'
 import styled from 'styled-components'
 import { Switch, Route } from 'react-router-dom'
 
@@ -21,6 +21,9 @@ const WrapperLayout = styled.div`
   display: flex;
   flex-direction: column;
 `
+
+// Context to pass hooks that trigger photos loading in Gallery
+export const PhotosLoadingContext = createContext([false, () => {}])
 
 const Wrapper = ({ children }) => {
   // Initial API request - collections data without photos details
@@ -71,6 +74,68 @@ const Wrapper = ({ children }) => {
     }
   }, [collectionsArray.length])
 
+  // Request Unsplash API for next page of photos
+  const [photosLoading, setPhotosLoading] = useState({
+    loading: false,
+    ready: true,
+    id: 0,
+  })
+
+  useEffect(() => {
+    if (photosLoading['loading'] && photosLoading['ready']) {
+      const id = photosLoading.id
+      const index = collectionsWithPhotos.findIndex(
+        nextCollection => nextCollection.id === id,
+      )
+      let collections = collectionsWithPhotos.slice(0)
+      let currentCollection = collections[index]
+
+      let { images, total_photos } = currentCollection
+      const photosCount = images ? images.length : 0
+      if (photosCount >= total_photos) {
+        setPhotosLoading({ loading: false, ready: false, id: 0 })
+        return
+      }
+      const perPage = 20
+      const page = Math.ceil(photosCount / perPage)
+      const skipResults = photosCount % perPage
+      const photosNeeded = total_photos - photosCount
+
+      const imagesRequest = getPhotos(unsplash, id, page, perPage)
+        .then(photos => {
+          if (photos.length === 0) {
+            console.error(
+              `No photos available from API with this query params: collection_id: ${id}, page: ${page}, perPage: ${perPage}.`,
+            )
+          }
+          return photos
+        })
+        .then(photos => {
+          return filterPhotosDetails(photos)
+        })
+        .then(photos => {
+          const actualLength = photos.length
+          const photosCut =
+            perPage < photosNeeded ||
+            actualLength === skipResults + photosNeeded
+              ? photos.slice(skipResults)
+              : photos.slice(
+                  skipResults,
+                  Math.min(skipResults + photosNeeded, perPage),
+                )
+          const updatedImages = images.concat(photosCut)
+          return updatedImages
+        })
+        .then(updatedImages => {
+          currentCollection.images = updatedImages
+
+          collections[index] = currentCollection
+          setCollectionsWithPhotos(collections)
+        })
+        .then(() => setPhotosLoading({ loading: false, ready: true, id: 0 }))
+    }
+  }, [photosLoading.id > 0])
+
   return (
     <WrapperLayout>
       <Header />
@@ -96,7 +161,14 @@ const Wrapper = ({ children }) => {
             path="/collections/:id"
             render={props => {
               return initialPhotosReady ? (
-                <Gallery {...props} collectionsArray={collectionsWithPhotos} />
+                <PhotosLoadingContext.Provider
+                  value={[photosLoading, setPhotosLoading]}
+                >
+                  <Gallery
+                    {...props}
+                    collectionsArray={collectionsWithPhotos}
+                  />
+                </PhotosLoadingContext.Provider>
               ) : (
                 <Loading />
               )
