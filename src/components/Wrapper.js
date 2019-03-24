@@ -12,9 +12,12 @@ import { unsplash } from '../utils/apiSimulation'
 import {
   getCollections,
   getPhotos,
+  getSinglePhoto,
   filterCollectionsDetails,
   filterPhotosDetails,
+  filterSinglePhotoDetails,
   addPhotosFromArray,
+  addSinglePhoto,
 } from '../utils/helpersApi'
 
 const WrapperLayout = styled.div`
@@ -28,7 +31,7 @@ const WrapperLayout = styled.div`
 export const PhotosLoadingContext = createContext([false, () => {}])
 
 // Context to pass Photos details
-export const PhotosDetailsContext = createContext({})
+export const PhotosDetailsContext = createContext([{}, () => {}])
 
 const Wrapper = ({ children }) => {
   // Initial API request - collections data without photos details
@@ -89,6 +92,7 @@ const Wrapper = ({ children }) => {
           .then(() => {
             if (collectionsArray.length === flag) setInitialPhotosReady(true)
           })
+          .catch(err => new Error(err))
       })
     }
   }, [collectionsArray.length])
@@ -156,11 +160,25 @@ const Wrapper = ({ children }) => {
           setCollectionsWithPhotos(collections)
         })
         .then(() => setPhotosLoading({ loading: false, ready: true, id: 0 }))
+        .catch(err => new Error(err))
     }
   }, [photosLoading.id > 0])
 
   // Details of photos requested from API
   const [photosDetails, setPhotosDetails] = useState({})
+
+  // Request single photo details
+  const getPhotoDetails = id => {
+    return getSinglePhoto(unsplash, id)
+      .then(photo => {
+        return filterSinglePhotoDetails(photo)
+      })
+      .then(photo => {
+        addSinglePhoto(photo, photosDetails, setPhotosDetails)
+        return photo
+      })
+      .catch(err => new Error(err))
+  }
 
   return (
     <WrapperLayout>
@@ -190,10 +208,14 @@ const Wrapper = ({ children }) => {
                 <PhotosLoadingContext.Provider
                   value={[photosLoading, setPhotosLoading]}
                 >
-                  <Gallery
-                    {...props}
-                    collectionsArray={collectionsWithPhotos}
-                  />
+                  <PhotosDetailsContext.Provider
+                    value={[photosDetails, getPhotoDetails]}
+                  >
+                    <Gallery
+                      {...props}
+                      collectionsArray={collectionsWithPhotos}
+                    />
+                  </PhotosDetailsContext.Provider>
                 </PhotosLoadingContext.Provider>
               ) : (
                 <Loading />
@@ -204,7 +226,9 @@ const Wrapper = ({ children }) => {
             path="/photos/:id"
             render={props => {
               return props.match.params.id in photosDetails ? (
-                <PhotosDetailsContext.Provider value={photosDetails}>
+                <PhotosDetailsContext.Provider
+                  value={[photosDetails, getPhotoDetails]}
+                >
                   <Photo {...props} />
                 </PhotosDetailsContext.Provider>
               ) : (
