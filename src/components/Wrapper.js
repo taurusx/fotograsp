@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext } from 'react'
 import styled from 'styled-components'
 import { Switch, Route } from 'react-router-dom'
+import Unsplash from 'unsplash-js'
 
 import Header from './Header'
 import Main from './Main'
@@ -8,7 +9,6 @@ import Collections from './Collections'
 import Gallery from './Gallery'
 import Photo from './Photo'
 import Loading from './Loading'
-import { unsplash } from '../utils/apiSimulation'
 import {
   getCollections,
   getPhotos,
@@ -26,6 +26,14 @@ const WrapperLayout = styled.div`
   display: flex;
   flex-direction: column;
 `
+
+const UNSPLASH_API_ACCESS = process.env.UNSPLASH_API_ACCESS
+const UNSPLASH_API_SECRET = process.env.UNSPLASH_API_SECRET
+
+const unsplash = new Unsplash({
+  applicationId: UNSPLASH_API_ACCESS,
+  secret: UNSPLASH_API_SECRET,
+})
 
 // Context to pass hooks that trigger photos loading in Gallery
 export const PhotosLoadingContext = createContext([false, () => {}])

@@ -1,3 +1,5 @@
+import { toJson } from 'unsplash-js'
+
 import { mergeDeep } from './mergeDeep'
 
 /*
@@ -8,8 +10,8 @@ function getCollections(unsplash) {
   let collectionsArray = []
   return new Promise((resolve, reject) => {
     unsplash.collections
-      .listCollections(1, 5, 'latest')
-      .then(unsplash.toJson) // todo: original API without 'unsplash'
+      .listCollections(1, 6, 'latest')
+      .then(toJson)
       .then(json => {
         collectionsArray = json
         resolve(collectionsArray)
@@ -26,10 +28,10 @@ function getPhotos(unsplash, id, page, perPage, orderBy = 'latest') {
   return new Promise((resolve, reject) => {
     unsplash.collections
       .getCollectionPhotos(id, page, perPage, orderBy)
-      .then(unsplash.toJson) // todo: original API without 'unsplash.'
+      .then(toJson)
       .then(json => {
         photosArray = json
-        resolve(photosArray) // todo: check if json or array from api
+        resolve(photosArray)
       })
       .catch(err => reject(new Error(err)))
   })
@@ -44,7 +46,7 @@ function getSinglePhoto(unsplash, id) {
   return new Promise((resolve, reject) => {
     unsplash.photos
       .getPhoto(id)
-      .then(unsplash.toJson) // todo: original API without 'unsplash.'
+      .then(toJson)
       .then(json => {
         photo = json
         resolve(photo)
