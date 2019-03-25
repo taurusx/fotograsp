@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
@@ -33,6 +33,10 @@ const ImageWrapper = styled.div`
   @media (max-width: 480px) {
     min-height: 250px;
     height: auto;
+
+    img {
+      height: auto;
+    }
   }
 `
 
@@ -77,8 +81,8 @@ const StyledLink = styled(Link)`
 
 const Photo = ({ match }) => {
   const id = match.params.id
-  // Photos Details
-  const photosDetails = useContext(PhotosDetailsContext)
+  // Single Photo Details
+  const [photosDetails, getphotoDetails] = useContext(PhotosDetailsContext)
   let currentPhoto = id in photosDetails ? photosDetails[id] : ''
   const {
     color = '#FFFFFF',
@@ -87,8 +91,24 @@ const Photo = ({ match }) => {
     urls = {},
     user = {},
     exif = {},
+    views = 0,
+    downloads = 0,
   } = currentPhoto
-  console.log(currentPhoto)
+
+  console.log(currentPhoto, id)
+  const [loadingCompleted, setLoadingCompleted] = useState(false)
+
+  useEffect(() => {
+    if ('exif' in photosDetails[id] || 'location' in photosDetails[id])
+      setLoadingCompleted(true)
+  }, [])
+
+  useEffect(() => {
+    if (loadingCompleted) return
+    getphotoDetails(id)
+      .then(() => setLoadingCompleted(true))
+      .catch(err => new Error(err))
+  }, [loadingCompleted])
 
   return (
     <PhotoWrapper>
@@ -138,8 +158,20 @@ const Photo = ({ match }) => {
       ) : (
         ''
       )}
-
-      {'name' in user && 'make' in exif ? (
+      {views ? (
+        <div>Odwiedzin: {views !== null && views > 0 ? views : ''}</div>
+      ) : (
+        ''
+      )}
+      {downloads ? (
+        <div>
+          Pobrano:{' '}
+          {downloads !== null && downloads > 1 ? `${downloads} razy` : ''}
+        </div>
+      ) : (
+        ''
+      )}
+      {loadingCompleted ? (
         ''
       ) : (
         <LoadingArea>
