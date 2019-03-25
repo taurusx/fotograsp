@@ -128,7 +128,7 @@ const Wrapper = ({ children }) => {
         return
       }
       const perPage = 20
-      const page = Math.ceil(photosCount / perPage)
+      const page = Math.ceil((photosCount + 1) / perPage)
       const skipResults = photosCount % perPage
       const photosNeeded = total_photos - photosCount
 
